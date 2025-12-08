@@ -1034,6 +1034,11 @@ void CPanel::ExtractArchives()
   ::ExtractArchives(paths, outFolder
       , true   // showDialog
       , false  // elimDup
+      // **************** 0xLC Modification Start ****************
+      , false  // smartExtr
+      , false  // entFolder
+	  , UString("") // EnterParamTarget
+      // **************** 0xLC Modification  End  ****************
       , ci.WriteZone
       );
 }

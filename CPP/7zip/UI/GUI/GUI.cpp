@@ -19,6 +19,9 @@
 #include "../../../Common/MyException.h"
 #include "../../../Common/StringConvert.h"
 
+// **************** 0xLC Modification Start ****************
+#include "../../../Windows/FileName.h"
+// **************** 0xLC Modification  End  ****************
 #include "../../../Windows/FileDir.h"
 #include "../../../Windows/NtCheck.h"
 
@@ -260,6 +263,10 @@ static int Main2()
     (CExtractOptionsBase &)eo = options.ExtractOptions;
     eo.StdInMode = options.StdInMode;
     eo.StdOutMode = options.StdOutMode;
+    // **************** 0xLC Modification Start ****************
+    eo.EnterFolder = options.EnterFolder;
+	eo.EnterParamTarget = options.EnterParamTarget;
+    // **************** 0xLC Modification  End  ****************
     eo.YesToAll = options.YesToAll;
     ecs->YesToAll = options.YesToAll;
     eo.TestMode = options.Command.IsTestCommand();
@@ -323,8 +330,66 @@ static int Main2()
         return NExitCode::kFatalError;
       throw CSystemException(result);
     }
+	// **************** 0xLC Modification Start ****************
     if (!ecs->IsOK())
+    {
       return NExitCode::kFatalError;
+    }
+    else
+    {
+		if (eo.EnterFolder)
+		{
+			auto EnterFolderAction = [](const WCHAR* _dir)
+			{
+				ShellExecuteW(NULL, NULL, _dir, NULL, NULL, SW_SHOWNORMAL);
+			};
+			
+			
+			if (eo.SmartExtract.Val && !eo.SmartResult.newFolder.IsEmpty())
+			{
+				UString output = eo.SmartResult.GetFinalPath(UString(""));
+				EnterFolderAction(output.Ptr());
+			}
+			else EnterFolderAction(eo.OutputDir);
+		}
+		
+		if (!eo.EnterParamTarget.IsEmpty())
+		{
+			auto GetQuotedString = [](const UString &_s) -> UString
+			{
+				UString s {'\"'};
+				s += _s;
+				s.Add_Char('\"');
+				return s;
+			};
+			
+			auto RunWithArg = [](const WCHAR* _prog, const WCHAR* _arg)
+			{
+				ShellExecuteW(NULL, NULL, _prog, _arg, NULL, SW_SHOWNORMAL);
+			};
+			
+			
+			UString &prog = eo.EnterParamTarget;
+			DWORD attrib = GetFileAttributesW(prog.Ptr());
+			
+			if((attrib != INVALID_FILE_ATTRIBUTES) && !(attrib & FILE_ATTRIBUTE_DIRECTORY))
+			{
+				bool doSE = eo.SmartExtract.Val && !eo.SmartResult.newFolder.IsEmpty();
+				UString arg = doSE ? eo.SmartResult.GetFinalPath(UString("")) : fs2us(eo.OutputDir);
+				NFile::NName::NormalizeDirPathPrefix(arg);
+				arg = GetQuotedString(arg);
+				
+				if (eo.SmartExtract.Val && !eo.SmartResult.rootItem.IsEmpty())
+				{
+					arg += " ";
+					arg += GetQuotedString(eo.SmartResult.rootItem);
+				}
+				
+				RunWithArg(prog.Ptr(), arg.Ptr());
+			}
+		}
+    }
+    // **************** 0xLC Modification  End  ****************
   }
   else if (options.Command.IsFromUpdateGroup())
   {

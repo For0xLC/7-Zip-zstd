@@ -326,7 +326,16 @@ static void ExtractGroupCommand(const UStringVector &arcPaths, UString &params, 
     ErrorMessageHRESULT(result);
 }
 
-void ExtractArchives(const UStringVector &arcPaths, const UString &outFolder, bool showDialog, bool elimDup, UInt32 writeZone)
+// **************** 0xLC Modification Start ****************
+// void ExtractArchives(const UStringVector &arcPaths, const UString &outFolder, bool showDialog, bool elimDup, UInt32 writeZone);
+void ExtractArchives(
+	const UStringVector &arcPaths,
+	const UString &outFolder,
+	bool showDialog, bool elimDup,
+	bool smartExtr, bool entFolder,
+	const UString &EnterParamTarget,
+	UInt32 writeZone)
+// **************** 0xLC Modification  End  ****************
 {
   MY_TRY_BEGIN
   UString params ('x');
@@ -337,6 +346,17 @@ void ExtractArchives(const UStringVector &arcPaths, const UString &outFolder, bo
   }
   if (elimDup)
     params += " -spe";
+  // **************** 0xLC Modification Start ****************
+  if (smartExtr)
+    params += " -spse";
+  if (entFolder)
+    params += " -sef";
+  if (!EnterParamTarget.IsEmpty())
+  {
+	params += " -sefp";
+	params += GetQuotedString(EnterParamTarget);
+  }
+  // **************** 0xLC Modification  End  ****************
   if (writeZone != (UInt32)(Int32)-1)
   {
     params += " -snz";
@@ -347,7 +367,6 @@ void ExtractArchives(const UStringVector &arcPaths, const UString &outFolder, bo
   ExtractGroupCommand(arcPaths, params, false);
   MY_TRY_FINISH_VOID
 }
-
 
 void TestArchives(const UStringVector &arcPaths, bool hashMode)
 {

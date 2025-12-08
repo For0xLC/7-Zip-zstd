@@ -59,6 +59,11 @@ struct CArcCmdLineOptions
   bool IsStdErrTerminal;
   bool StdInMode;
   bool StdOutMode;
+  // **************** 0xLC Modification Start ****************
+  bool EnterFolder;
+  UString EnterParamTarget{};
+  // **************** 0xLC Modification  End  ****************
+  
   bool EnableHeaders;
   bool DisablePercents;
 
@@ -132,6 +137,7 @@ struct CArcCmdLineOptions
 
       StdInMode(false),
       StdOutMode(false),
+	  EnterFolder(false),
 
       EnableHeaders(false),
       DisablePercents(false),

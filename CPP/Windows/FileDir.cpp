@@ -2,9 +2,14 @@
 
 #include "StdAfx.h"
 
+// **************** 0xLC Modification Start ****************
+#include <cstdio>
+// **************** 0xLC Modification  End  ****************
 
 #ifndef _WIN32
-#include <stdio.h>
+// **************** 0xLC Modification Start ****************
+// #include <stdio.h>
+// **************** 0xLC Modification  End  ****************
 #include <stdlib.h>
 #include <errno.h>
 #include <limits.h>
@@ -557,6 +562,58 @@ bool CreateComplexDir(CFSTR _path)
   return true;
 }
 
+// **************** 0xLC Modification Start ****************
+bool CreateComplexDir(const UString& _base, UString &_new, bool _rename)
+{
+  UString base = _base;
+  NormalizeDirPathPrefix(base);
+  if (IsPathSepar(_new.Back())) _new.DeleteBack();
+  
+  UString _path = base + _new;
+  
+  #ifdef _WIN32
+  {
+    const DWORD attrib = NFind::GetFileAttrib(_path);
+    if (attrib != INVALID_FILE_ATTRIBUTES && (attrib & FILE_ATTRIBUTE_DIRECTORY) != 0)
+    {
+      if(!_rename) return true;
+      else
+      {
+		UString path (_path);
+		const int maxTry = 0xFFFF;
+		
+		if (IsPathSepar(path.Back())) path.DeleteBack();
+		
+		DWORD attrN = 0;
+		char finalNum[16];
+		UString finalName = path;
+		
+		for(int i = 0; i < maxTry; i++)
+		{
+			sprintf_s(finalNum, sizeof(finalNum), " (%d)", i + 1);
+			finalName += UString(finalNum);
+			attrN = NFind::GetFileAttrib(finalName);
+			
+			if(attrN != INVALID_FILE_ATTRIBUTES)
+			{
+				finalName = path;
+				continue;
+			}
+			else
+			{
+				_new += UString(finalNum);
+				return CreateComplexDir(finalName);
+			}
+		}
+		return true;
+      }
+    }
+  }
+  #endif // _WIN32
+
+  return CreateComplexDir(_path);
+}
+// **************** 0xLC Modification  End  ****************
 
 #ifdef _WIN32
 

@@ -9,6 +9,10 @@
 #define IDS_CONTEXT_COMPRESS_TO         2328
 #define IDS_CONTEXT_COMPRESS_EMAIL      2329
 #define IDS_CONTEXT_COMPRESS_TO_EMAIL   2330
+// **************** 0xLC Modification Start ****************
+#define IDS_CONTEXT_EXTRACT_SMART       2331
+#define IDS_CONTEXT_EXTRACT_HERE_SMART  2332
+// **************** 0xLC Modification  End  ****************
 
 #define IDS_SELECT_FILES                3015
 

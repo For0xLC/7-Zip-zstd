@@ -219,6 +219,11 @@ HRESULT ExtractGUI(
       dialog.PathMode = options.PathMode;
       dialog.PathMode_Force = options.PathMode_Force;
       dialog.ElimDup = options.ElimDup;
+      // **************** 0xLC Modification Start ****************
+	  dialog.EnterFolder.Def = options.EnterFolder;
+      dialog.EnterFolder.Val = options.EnterFolder;
+	  dialog.EnterParamTarget = options.EnterParamTarget;
+      // **************** 0xLC Modification  End  ****************
 
       if (archivePathsFull.Size() == 1)
         dialog.ArcPath = archivePathsFull[0];
@@ -238,6 +243,10 @@ HRESULT ExtractGUI(
       options.OverwriteMode = dialog.OverwriteMode;
       options.PathMode = dialog.PathMode;
       options.ElimDup = dialog.ElimDup;
+      // **************** 0xLC Modification Start ****************
+      options.EnterFolder = dialog.EnterFolder.Def ? dialog.EnterFolder.Val : false;
+	  options.EnterParamTarget = dialog.EnterParamTarget;
+      // **************** 0xLC Modification  End  ****************
       
       #ifndef Z7_SFX
       // options.NtOptions.AltStreams = dialog.AltStreams;

@@ -187,6 +187,9 @@ enum Enum
   kUseSlashMark,
   kDisableWildcardParsing,
   kElimDup,
+  // **************** 0xLC Modification Start ****************
+  kSmartExtract,
+  // **************** 0xLC Modification  End  ****************
   kFullPathMode,
   
   kHardLinks,
@@ -203,6 +206,11 @@ enum Enum
   kWriteToAltStreamIfColon,
 
   kNameTrailReplace,
+  
+  // **************** 0xLC Modification Start ****************
+  kEnterFolder,
+  kEnterFolderParam,
+  // **************** 0xLC Modification  End  ****************
 
   kDeleteAfterCompressing,
   kSetArcMTime
@@ -338,6 +346,9 @@ static const CSwitchForm kSwitchForms[] =
   { "spm", SWFRM_STRING_SINGL(0) },
   { "spd", SWFRM_SIMPLE },
   { "spe", SWFRM_MINUS },
+  // **************** 0xLC Modification Start ****************
+  { "spse", SWFRM_MINUS },
+  // **************** 0xLC Modification  End  ****************
   { "spf", SWFRM_STRING_SINGL(0) },
   
   { "snh", SWFRM_MINUS },
@@ -354,6 +365,11 @@ static const CSwitchForm kSwitchForms[] =
   { "snc", SWFRM_SIMPLE },
   
   { "snt", SWFRM_MINUS },
+  
+  // **************** 0xLC Modification Start ****************
+  { "sef", SWFRM_MINUS },
+  { "sefp", SWFRM_STRING_SINGL(1) },
+  // **************** 0xLC Modification  End  ****************
   
   { "sdel", SWFRM_SIMPLE },
   { "stl", SWFRM_SIMPLE }
@@ -1358,6 +1374,28 @@ void CArcCmdLineParser::Parse2(CArcCmdLineOptions &options)
     options.ExtractOptions.ElimDup.Def = true;
     options.ExtractOptions.ElimDup.Val = !parser[NKey::kElimDup].WithMinus;
   }
+  
+  // **************** 0xLC Modification Start ****************
+  if (parser[NKey::kSmartExtract].ThereIs)
+  {
+    options.ExtractOptions.SmartExtract.Def = true;
+    options.ExtractOptions.SmartExtract.Val = !parser[NKey::kSmartExtract].WithMinus;
+  }
+  
+  if (parser[NKey::kEnterFolder].ThereIs)
+  {
+    options.EnterFolder = !parser[NKey::kEnterFolder].WithMinus;
+  }
+  
+  if (parser[NKey::kEnterFolderParam].ThereIs)
+  {
+	// UString
+  	options.EnterParamTarget = parser[NKey::kEnterFolderParam].PostStrings[0];
+	#ifdef _WIN32
+	  NFile::NName::NormalizeDirSeparators(options.EnterParamTarget);
+	#endif
+  }
+  // **************** 0xLC Modification  End  ****************
   
   NWildcard::ECensorPathMode censorPathMode = NWildcard::k_RelatPath;
   bool fullPathMode = parser[NKey::kFullPathMode].ThereIs;

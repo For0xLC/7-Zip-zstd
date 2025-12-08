@@ -34,6 +34,10 @@ namespace NExtract
     // CBoolPair AltStreams;
     CBoolPair NtSecurity;
     CBoolPair ShowPassword;
+    // **************** 0xLC Modification Start ****************
+    CBoolPair EnterFolder;
+	UString EnterParamTarget{};
+    // **************** 0xLC Modification  End  ****************
 
     UStringVector Paths;
 

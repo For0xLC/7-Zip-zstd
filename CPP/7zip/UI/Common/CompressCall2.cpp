@@ -212,14 +212,28 @@ static HRESULT ExtractGroupCommand(const UStringVector &arcPaths,
   return result;
 }
 
-void ExtractArchives(const UStringVector &arcPaths, const UString &outFolder,
-    bool showDialog, bool elimDup, UInt32 writeZone)
+// **************** 0xLC Modification Start ****************
+// void ExtractArchives(const UStringVector &arcPaths, const UString &outFolder, bool showDialog, bool elimDup, UInt32 writeZone);
+void ExtractArchives(
+	const UStringVector &arcPaths,
+	const UString &outFolder,
+	bool showDialog, bool elimDup,
+	bool smartExtr, bool entFolder,
+	const UString &EnterParamTarget,
+	UInt32 writeZone)
+// **************** 0xLC Modification  End  ****************
 {
   CExtractOptions eo;
   eo.OutputDir = us2fs(outFolder);
   eo.TestMode = false;
   eo.ElimDup.Val = elimDup;
   eo.ElimDup.Def = elimDup;
+  // **************** 0xLC Modification Start ****************
+  eo.SmartExtract.Def = smartExtr;
+  eo.SmartExtract.Val = smartExtr;
+  eo.EnterFolder = entFolder;
+  eo.EnterParamTarget = EnterParamTarget;
+  // **************** 0xLC Modification  End  ****************
   if (writeZone != (UInt32)(Int32)-1)
     eo.ZoneMode = (NExtract::NZoneIdMode::EEnum)writeZone;
   ExtractGroupCommand(arcPaths, showDialog, eo);

@@ -2,7 +2,10 @@
 #include "../../GuiCommon.rc"
 
 #define xc 336
-#define yc 168
+// **************** 0xLC Modification Start ****************
+// #define yc 168
+#define yc 188
+// **************** 0xLC Modification  End  ****************
 
 #undef g1xs
 #undef g2x
@@ -44,6 +47,11 @@ BEGIN
   LTEXT     "Overwrite mode:", IDT_EXTRACT_OVERWRITE_MODE, m, m + 104, g1xs, 8
   COMBOBOX  IDC_EXTRACT_OVERWRITE_MODE, m, m + 116, g1xs, 140, MY_COMBO
 
+// **************** 0xLC Modification Start ****************
+  LTEXT     "&Send 'Output Path' to: (path to Program)", IDT_EXTRACT_ENTER_FOLDER_PARAM, m, m + 134, xc, 8
+  EDITTEXT  IDE_ENTER_PARAM_TARGET, m, m + 146, xc, 12, ES_AUTOHSCROLL
+// **************** 0xLC Modification  End  ****************
+
 
   GROUPBOX  "Password", IDG_PASSWORD, g2x, m + 36, g2xs, GROUP_Y_SIZE
   EDITTEXT  IDE_EXTRACT_PASSWORD, g2x2, m + 50, g2xs2, 14, ES_PASSWORD | ES_AUTOHSCROLL
@@ -53,6 +61,11 @@ BEGIN
 //            g2x, m + 104, g2xs, 10
   CONTROL   "Restore file security", IDX_EXTRACT_NT_SECUR, MY_CHECKBOX,
             g2x, m + 104, g2xs, 10
+  
+  // **************** 0xLC Modification Start ****************
+  CONTROL   "Enter folder after extract", IDX_EXTRACT_ENTER_FOLDER, MY_CHECKBOX,
+            g2x, m + 118, g2xs, 10
+  // **************** 0xLC Modification  End  ****************
   
   DEFPUSHBUTTON  "OK",     IDOK,     bx3, by, bxs, bys, WS_GROUP
   PUSHBUTTON     "Cancel", IDCANCEL, bx2, by, bxs, bys

@@ -80,6 +80,10 @@ static const UInt32 kLangIDs[] =
   // IDX_EXTRACT_ALT_STREAMS,
   IDX_EXTRACT_NT_SECUR,
   IDX_EXTRACT_ELIM_DUP,
+  // **************** 0xLC Modification Start ****************
+  IDX_EXTRACT_ENTER_FOLDER,
+  IDT_EXTRACT_ENTER_FOLDER_PARAM,
+  // **************** 0xLC Modification  End  ****************
   IDG_PASSWORD,
   IDX_PASSWORD_SHOW
 };
@@ -181,6 +185,9 @@ bool CExtractDialog::OnInit()
   // CheckButton_TwoBools(IDX_EXTRACT_ALT_STREAMS, AltStreams, _info.AltStreams);
   CheckButton_TwoBools(IDX_EXTRACT_NT_SECUR,    NtSecurity, _info.NtSecurity);
   CheckButton_TwoBools(IDX_EXTRACT_ELIM_DUP,    ElimDup,    _info.ElimDup);
+  // **************** 0xLC Modification Start ****************
+  CheckButton_TwoBools(IDX_EXTRACT_ENTER_FOLDER, EnterFolder, _info.EnterFolder);
+  // **************** 0xLC Modification  End  ****************
   
   CheckButton(IDX_PASSWORD_SHOW, _info.ShowPassword.Val);
   UpdatePasswordControl();
@@ -229,6 +236,12 @@ bool CExtractDialog::OnInit()
 
   AddComboItems(_pathMode, kPathMode_IDs, Z7_ARRAY_SIZE(kPathMode_IDs), kPathModeButtonsVals, PathMode);
   AddComboItems(_overwriteMode, kOverwriteMode_IDs, Z7_ARRAY_SIZE(kOverwriteMode_IDs), kOverwriteButtonsVals, OverwriteMode);
+
+  // **************** 0xLC Modification Start ****************
+  EnterParamTarget = _info.EnterParamTarget;
+  _target.Attach(GetItem(IDE_ENTER_PARAM_TARGET));
+  _target.SetText(EnterParamTarget);
+  // **************** 0xLC Modification  End  ****************
 
   #endif
 
@@ -310,6 +323,11 @@ void CExtractDialog::OnOK()
   // _filesMode = (NExtractionDialog::NFilesMode::EEnum)GetFilesMode();
 
   _passwordControl.GetText(Password);
+  
+  // **************** 0xLC Modification Start ****************
+  _target.GetText(EnterParamTarget);
+  _info.EnterParamTarget = EnterParamTarget;
+  // **************** 0xLC Modification  End  ****************
 
   #endif
 
@@ -318,6 +336,9 @@ void CExtractDialog::OnOK()
   // GetButton_Bools(IDX_EXTRACT_ALT_STREAMS, AltStreams, _info.AltStreams);
   GetButton_Bools(IDX_EXTRACT_NT_SECUR,    NtSecurity, _info.NtSecurity);
   GetButton_Bools(IDX_EXTRACT_ELIM_DUP,    ElimDup,    _info.ElimDup);
+  // **************** 0xLC Modification Start ****************
+  GetButton_Bools(IDX_EXTRACT_ENTER_FOLDER, EnterFolder, _info.EnterFolder);
+  // **************** 0xLC Modification  End  ****************
 
   bool showPassword = IsShowPasswordChecked();
   if (showPassword != _info.ShowPassword.Val)

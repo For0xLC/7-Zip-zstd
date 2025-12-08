@@ -76,7 +76,13 @@ public:
     kCommandNULL,
     kOpen,
     kExtract,
+    // **************** 0xLC Modification Start ****************
+    kExtractSmart,
+    // **************** 0xLC Modification  End  ****************
     kExtractHere,
+    // **************** 0xLC Modification Start ****************
+    kExtractHereSmart,
+    // **************** 0xLC Modification  End  ****************
     kExtractTo,
     kTest,
     kCompress,

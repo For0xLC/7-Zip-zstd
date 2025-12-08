@@ -44,6 +44,9 @@ class CExtractDialog: public NWindows::NControl::CModalDialog
   NWindows::NControl::CEdit _passwordControl;
   NWindows::NControl::CComboBox _pathMode;
   NWindows::NControl::CComboBox _overwriteMode;
+  // **************** 0xLC Modification Start ****************
+  NWindows::NControl::CEdit _target;
+  // **************** 0xLC Modification  End  ****************
   #endif
 
   #ifndef Z7_SFX
@@ -90,6 +93,10 @@ public:
   #endif
 
   CBoolPair ElimDup;
+  // **************** 0xLC Modification Start ****************
+  CBoolPair EnterFolder;
+  UString EnterParamTarget{};
+  // **************** 0xLC Modification  End  ****************
 
   INT_PTR Create(HWND aWndParent = NULL)
   {
@@ -106,6 +113,9 @@ public:
     OverwriteMode_Force(false)
   {
     ElimDup.Val = true;
+	// **************** 0xLC Modification Start ****************
+	EnterFolder.Val = false;
+	// **************** 0xLC Modification  End  ****************
   }
 
 };

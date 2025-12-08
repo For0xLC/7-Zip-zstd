@@ -4,8 +4,10 @@
 
 #include "../../../Common/StringConvert.h"
 
-#include "../../../Windows/FileDir.h"
-#include "../../../Windows/FileName.h"
+// **************** 0xLC Modification Start ****************
+// #include "../../../Windows/FileDir.h"
+// #include "../../../Windows/FileName.h"
+// **************** 0xLC Modification  End  ****************
 #include "../../../Windows/ErrorMsg.h"
 #include "../../../Windows/PropVariant.h"
 #include "../../../Windows/PropVariantConv.h"
@@ -89,6 +91,53 @@ static HRESULT DecompressArchive(
   }
 
   const bool allFilesAreAllowed = wildcardCensor.AreAllAllowed();
+
+  // **************** 0xLC Modification Start ****************
+  options.SmartResult.Init();
+  if (!options.StdInMode && options.SmartExtract.Val)
+  {
+	UInt32 numItems;
+	RINOK(archive->GetNumberOfItems(&numItems));
+	
+	CReadArcItem item;
+	
+	UString pathA{};
+	UString pathB{};
+	
+	for(UInt32 i = 0; i < numItems; i++)
+	{
+		RINOK(arc.GetItem(i, item));
+		const UString &path =
+		#ifdef SUPPORT_ALT_STREAMS
+			item.MainPath;
+		#else
+			item.Path;
+		#endif
+        
+        pathA = pathB;
+        int firstPos = path.Find(L'/');
+        if (firstPos == -1) firstPos = path.Find(L'\\');
+        if (firstPos == -1) pathB = path;
+        else pathB = path.Left(firstPos);
+        
+        if (i == 0) continue;
+        if (!pathB.IsEqualTo_NoCase(pathA.Ptr())) break;
+	}
+	
+	if(pathB.IsEqualTo_NoCase(pathA.Ptr()))
+	{
+		options.SmartResult.CheckConflict(fs2us(outDir), pathB, Get_Correct_FsFile_Name(replaceName));
+	}
+	
+	if(!pathA.IsEmpty() && !pathB.IsEqualTo_NoCase(pathA.Ptr()))
+	{
+		options.SmartResult.baseFolder = fs2us(outDir);
+		NName::NormalizeDirPathPrefix(options.SmartResult.baseFolder);
+		options.SmartResult.newFolder = Get_Correct_FsFile_Name(replaceName);
+		NName::NormalizeDirPathPrefix(options.SmartResult.newFolder);
+	}
+  }
+  // **************** 0xLC Modification  End  ****************
 
   if (!options.StdInMode)
   {
@@ -182,6 +231,21 @@ static HRESULT DecompressArchive(
   else if (NName::IsAltPathPrefix(outDir)) {}
   #endif
   */
+  // **************** 0xLC Modification Start ****************
+  else if (options.SmartExtract.Val)
+  {
+	if(!options.SmartResult.newFolder.IsEmpty())
+	{
+		if(!CreateComplexDir(fs2us(outDir), options.SmartResult.newFolder, true))
+		{
+		    const HRESULT res = GetLastError_noZero_HRESULT();
+			SetErrorMessage("Cannot create output directory", outDir, res, errorMessage);
+			return res;
+		}
+		else outDir = options.SmartResult.GetFinalPath(fs2us(outDir));
+	}
+  }
+  // **************** 0xLC Modification  End  ****************
   else if (!CreateComplexDir(outDir))
   {
     const HRESULT res = GetLastError_noZero_HRESULT();

@@ -122,8 +122,10 @@ DECLARE_AND_SET_CLIENT_VERSION_VAR
   #define PROG_POSTFIX_2  ""
 #endif
 
-
-#define kVersionString "7-Zip" PROG_POSTFIX_2 " " MY_VERSION_CPU
+// **************** 0xLC Modification Start ****************
+// #define kVersionString "7-Zip" PROG_POSTFIX_2 " " MY_VERSION_CPU
+#define kVersionString "7-Zip" PROG_POSTFIX_2 " " MY_VERSION_CPU " Mod v2 by 0xLC"
+// **************** 0xLC Modification  End  ****************
 
 static const char * const kCopyrightString = "\n"
   kVersionString
@@ -179,6 +181,10 @@ static const char * const kHelpString =
 #endif
     "|*] : set hash function for x, e, h commands\n"
     "  -sdel : delete files after compression\n"
+    // **************** 0xLC Modification Start ****************
+    "  -sef : Enter Folder after extract for extract command\n"
+	"  -sefp{Program} : Send Enter Folder Param to target program\n"
+    // **************** 0xLC Modification  End  ****************
     "  -seml[.] : send archive by email\n"
     "  -sfx[{name}] : Create SFX archive\n"
     "  -si[{name}] : read data from stdin\n"
@@ -192,6 +198,9 @@ static const char * const kHelpString =
     "  -spd : disable wildcard matching for file names\n"
     "  -spe : eliminate duplication of root folder for extract command\n"
     "  -spf[2] : use fully qualified file paths\n"
+    // **************** 0xLC Modification Start ****************
+    "  -spse : Smart Extract for extract command\n"
+    // **************** 0xLC Modification  End  ****************
     "  -ssc[-] : set sensitive case mode\n"
     "  -sse : stop archive creating, if it can't open some input file\n"
     "  -ssp : do not change Last Access Time of source files while archiving\n"
@@ -1366,6 +1375,10 @@ int Main2(
       
       eo.StdInMode = options.StdInMode;
       eo.StdOutMode = options.StdOutMode;
+      // **************** 0xLC Modification Start ****************
+      eo.EnterFolder = options.EnterFolder;
+	  eo.EnterParamTarget = options.EnterParamTarget;
+      // **************** 0xLC Modification  End  ****************
       eo.YesToAll = options.YesToAll;
       eo.TestMode = options.Command.IsTestCommand();
       

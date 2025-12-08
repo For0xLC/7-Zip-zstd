@@ -87,6 +87,22 @@ static void Key_Get_BoolPair_true(CKey &key, LPCTSTR name, CBoolPair &b)
   b.Def = (key.GetValue_bool_IfOk(name, b.Val) == ERROR_SUCCESS);
 }
 
+// **************** 0xLC Modification Start ****************
+static void SetRegString(CKey &key, LPCWSTR name, const UString &value)
+{
+  if (value.IsEmpty())
+    key.DeleteValue(name);
+  else
+    key.SetValue(name, value);
+}
+
+static void GetRegString(CKey &key, LPCWSTR name, UString &value)
+{
+  if (key.QueryValue(name, value) != ERROR_SUCCESS)
+    value.Empty();
+}
+// **************** 0xLC Modification  End  ****************
+
 namespace NExtract
 {
 
@@ -100,6 +116,10 @@ static LPCTSTR const kSplitDest = TEXT("SplitDest");
 static LPCTSTR const kElimDup = TEXT("ElimDup");
 // static LPCTSTR const kAltStreams = TEXT("AltStreams");
 static LPCTSTR const kNtSecur = TEXT("Security");
+// **************** 0xLC Modification Start ****************
+static LPCTSTR const kEnterFolder = TEXT("EnterFolderAfterExtract");
+static LPCTSTR const kEnterFolderParam = TEXT("EnterFolderParam");
+// **************** 0xLC Modification  End  ****************
 static LPCTSTR const kMemLimit = TEXT("MemLimit");
 
 void CInfo::Save() const
@@ -119,6 +139,10 @@ void CInfo::Save() const
   // Key_Set_BoolPair(key, kAltStreams, AltStreams);
   Key_Set_BoolPair(key, kNtSecur, NtSecurity);
   Key_Set_BoolPair(key, kShowPassword, ShowPassword);
+  // **************** 0xLC Modification Start ****************
+  Key_Set_BoolPair(key, kEnterFolder, EnterFolder);
+  SetRegString(key, kEnterFolderParam, EnterParamTarget);
+  // **************** 0xLC Modification  End  ****************
 
   key.RecurseDeleteKey(kPathHistory);
   if (WantPathHistory())
@@ -178,6 +202,10 @@ void CInfo::Load()
   // Key_Get_BoolPair(key, kAltStreams, AltStreams);
   Key_Get_BoolPair(key, kNtSecur, NtSecurity);
   Key_Get_BoolPair(key, kShowPassword, ShowPassword);
+  // **************** 0xLC Modification Start ****************
+  Key_Get_BoolPair(key, kEnterFolder, EnterFolder);
+  GetRegString(key, kEnterFolderParam, EnterParamTarget);
+  // **************** 0xLC Modification  End  ****************
 }
 
 bool Read_ShowPassword()
@@ -237,6 +265,8 @@ static LPCTSTR const kATime = TEXT("ATime");
 static LPCTSTR const kCTime = TEXT("CTime");
 static LPCTSTR const kSetArcMTime = TEXT("SetArcMTime");
 
+// **************** 0xLC Modification Start ****************
+/*
 static void SetRegString(CKey &key, LPCWSTR name, const UString &value)
 {
   if (value.IsEmpty())
@@ -250,6 +280,8 @@ static void GetRegString(CKey &key, LPCWSTR name, UString &value)
   if (key.QueryValue(name, value) != ERROR_SUCCESS)
     value.Empty();
 }
+*/
+// **************** 0xLC Modification  End  ****************
 
 static LPCWSTR const kMemUse = L"MemUse"
     #if defined(MY_CPU_SIZEOF_POINTER) && (MY_CPU_SIZEOF_POINTER == 4)

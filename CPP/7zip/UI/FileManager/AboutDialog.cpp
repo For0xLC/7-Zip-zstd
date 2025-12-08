@@ -46,7 +46,10 @@ bool CAboutDialog::OnInit()
   LangSetWindowText(*this, IDD_ABOUT);
   LangSetDlgItems(*this, kLangIDs, Z7_ARRAY_SIZE(kLangIDs));
   #endif
-  SetItemText(IDT_ABOUT_VERSION, UString("7-Zip " MY_VERSION_CPU));
+  // **************** 0xLC Modification Start ****************
+  // SetItemText(IDT_ABOUT_VERSION, UString("7-Zip " MY_VERSION_CPU));
+  SetItemText(IDT_ABOUT_VERSION, UString("7-Zip " MY_VERSION_CPU " Mod v2 by 0xLC"));
+  // **************** 0xLC Modification  End  ****************
   SetItemText(IDT_ABOUT_DATE, LLL(MY_DATE));
   
   NormalizePosition();

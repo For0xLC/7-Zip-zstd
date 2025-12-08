@@ -86,6 +86,9 @@ bool CreateDir(CFSTR path);
   path can be WITH or WITHOUT trailing path separator. */
 
 bool CreateComplexDir(CFSTR path);
+// **************** 0xLC Modification Start ****************
+bool CreateComplexDir(const UString& baseFolder, UString &newFolder, bool rename = true);
+// **************** 0xLC Modification  End  ****************
 
 bool DeleteFileAlways(CFSTR name);
 bool RemoveDirWithSubItems(const FString &path);

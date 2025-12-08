@@ -272,7 +272,13 @@ static const CContextMenuCommand g_Commands[] =
 {
   CMD_REC( kOpen,        "Open",        IDS_CONTEXT_OPEN),
   CMD_REC( kExtract,     "Extract",     IDS_CONTEXT_EXTRACT),
+  // **************** 0xLC Modification Start ****************
+  CMD_REC( kExtractSmart,     "ExtractSmart",     IDS_CONTEXT_EXTRACT_SMART),
+  // **************** 0xLC Modification  End  ****************
   CMD_REC( kExtractHere, "ExtractHere", IDS_CONTEXT_EXTRACT_HERE),
+  // **************** 0xLC Modification Start ****************
+  CMD_REC( kExtractHereSmart, "ExtractHereSmart", IDS_CONTEXT_EXTRACT_HERE_SMART),
+  // **************** 0xLC Modification  End  ****************
   CMD_REC( kExtractTo,   "ExtractTo",   IDS_CONTEXT_EXTRACT_TO),
   CMD_REC( kTest,        "Test",        IDS_CONTEXT_TEST),
   CMD_REC( kCompress,           "Compress",           IDS_CONTEXT_COMPRESS),
@@ -856,6 +862,17 @@ Z7_COMWF_B CZipContextMenu::QueryContextMenu(HMENU hMenu, UINT indexMenu,
           AddCommand(kExtract, mainString, cmi);
           MyInsertMenu(popupMenu, subIndex++, currentCommandID++, mainString, bitmap);
         }
+        
+        // **************** 0xLC Modification Start ****************
+        if ((contextMenuFlags & NContextMenuFlags::kExtractSmart) != 0)
+        {
+          // Extract Smart
+          CCommandMapItem cmi;
+          cmi.Folder = baseFolder;
+          AddCommand(kExtractSmart, mainString, cmi);
+          MyInsertMenu(popupMenu, subIndex++, currentCommandID++, mainString, bitmap);
+        }
+        // **************** 0xLC Modification  End  ****************
 
         if ((contextMenuFlags & NContextMenuFlags::kExtractHere) != 0)
         {
@@ -865,6 +882,17 @@ Z7_COMWF_B CZipContextMenu::QueryContextMenu(HMENU hMenu, UINT indexMenu,
           AddCommand(kExtractHere, mainString, cmi);
           MyInsertMenu(popupMenu, subIndex++, currentCommandID++, mainString, bitmap);
         }
+
+        // **************** 0xLC Modification Start ****************
+		if ((contextMenuFlags & NContextMenuFlags::kExtractHereSmart) != 0)
+		{
+			// Extract Here Smart
+		  CCommandMapItem cmi;
+		  cmi.Folder = baseFolder;
+		  AddCommand(kExtractHereSmart, mainString, cmi);
+		  MyInsertMenu(popupMenu, subIndex++, currentCommandID++, mainString, bitmap);
+		}
+		// **************** 0xLC Modification  End  ****************
 
         if ((contextMenuFlags & NContextMenuFlags::kExtractTo) != 0)
         {
@@ -1288,6 +1316,9 @@ HRESULT CZipContextMenu::InvokeCommandCommon(const CCommandMapItem &cmi)
       case kExtract:
       case kExtractHere:
       case kExtractTo:
+      // **************** 0xLC Modification Start ****************
+      case kExtractSmart:
+      case kExtractHereSmart:
       {
         if (_attribs.FirstDirIndex != -1)
         {
@@ -1295,12 +1326,16 @@ HRESULT CZipContextMenu::InvokeCommandCommon(const CCommandMapItem &cmi)
           break;
         }
         ExtractArchives(_fileNames, cmi.Folder,
-            (cmdID == kExtract), // showDialog
+            (cmdID == kExtract || cmdID == kExtractSmart), // showDialog
             (cmdID == kExtractTo) && _elimDup.Val, // elimDup
+            (cmdID == kExtractSmart || cmdID == kExtractHereSmart), // smartExtr
+            false, // entFolder
+            UString(""), // EnterParamTarget
             _writeZone
             );
         break;
       }
+      // **************** 0xLC Modification  End  ****************
       case kTest:
       {
         TestArchives(_fileNames);

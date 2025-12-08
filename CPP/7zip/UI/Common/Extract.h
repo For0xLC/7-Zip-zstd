@@ -4,6 +4,10 @@
 #define ZIP7_INC_EXTRACT_H
 
 #include "../../../Windows/FileFind.h"
+// **************** 0xLC Modification Start ****************
+#include "../../../Windows/FileDir.h"
+#include "../../../Windows/FileName.h"
+// **************** 0xLC Modification  End  ****************
 
 #include "../../Archive/IArchive.h"
 
@@ -14,9 +18,51 @@
 
 #include "../Common/LoadCodecs.h"
 
+// **************** 0xLC Modification Start ****************
+struct SmartExtractResult
+{
+	UString baseFolder{};
+	UString newFolder{};
+	
+	void Init()
+	{
+		baseFolder.Empty();
+		newFolder.Empty();
+	}
+	
+	UString GetFinalPath(const UString& _base)
+	{
+		baseFolder = _base.IsEmpty() ? baseFolder : _base;
+		NWindows::NFile::NName::NormalizeDirPathPrefix(baseFolder);
+		return newFolder.IsEmpty() ? newFolder : baseFolder + newFolder;
+	}
+	
+	void CheckConflict(const UString& _base, const UString& _will, const UString& _new)
+	{
+		if(_will.IsEmpty() || _new.IsEmpty()) return;
+		
+		baseFolder = _base.IsEmpty() ? baseFolder : _base;
+		NWindows::NFile::NName::NormalizeDirPathPrefix(baseFolder);
+		UString checkItem = baseFolder + _will;
+		
+		const DWORD attrib = NWindows::NFile::NFind::GetFileAttrib(checkItem);
+		if(attrib != INVALID_FILE_ATTRIBUTES)
+		{
+			newFolder = _new;
+			NWindows::NFile::NName::NormalizeDirPathPrefix(newFolder);
+		}
+	}
+};
+// **************** 0xLC Modification  End  ****************
+
 struct CExtractOptionsBase
 {
   CBoolPair ElimDup;
+  
+  // **************** 0xLC Modification Start ****************
+  CBoolPair SmartExtract;
+  mutable SmartExtractResult SmartResult;
+  // **************** 0xLC Modification  End  ****************
 
   bool ExcludeDirItems;
   bool ExcludeFileItems;
@@ -47,6 +93,10 @@ struct CExtractOptions: public CExtractOptionsBase
 {
   bool StdInMode;
   bool StdOutMode;
+  // **************** 0xLC Modification Start ****************
+  bool EnterFolder;
+  UString EnterParamTarget{};
+  // **************** 0xLC Modification  End  ****************
   bool YesToAll;
   bool TestMode;
   
@@ -66,6 +116,9 @@ struct CExtractOptions: public CExtractOptionsBase
   CExtractOptions():
       StdInMode(false),
       StdOutMode(false),
+	  // **************** 0xLC Modification Start ****************
+	  EnterFolder(false),
+	  // **************** 0xLC Modification  End  ****************
       YesToAll(false),
       TestMode(false)
       {}

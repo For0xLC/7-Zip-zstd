@@ -30,6 +30,13 @@ struct CExtractOptionsBase
 	UString newFolder{};
 	UString rootItem{};
 	
+	void Init()
+	{
+		baseFolder.Empty();
+		newFolder.Empty();
+		rootItem.Empty();
+	}
+	
 	UString GetFinalPath(const UString& _base)
 	{
 		baseFolder = _base.IsEmpty() ? baseFolder : _base;

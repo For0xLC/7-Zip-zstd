@@ -93,6 +93,7 @@ static HRESULT DecompressArchive(
   const bool allFilesAreAllowed = wildcardCensor.AreAllAllowed();
 
   // **************** 0xLC Modification Start ****************
+  options.SmartResult.Init();
   if (!options.StdInMode && options.SmartExtract.Val)
   {
 	UInt32 numItems;

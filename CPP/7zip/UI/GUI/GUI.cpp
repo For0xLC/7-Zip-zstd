@@ -355,6 +355,13 @@ static int Main2()
 		
 		if (!eo.EnterParamTarget.IsEmpty())
 		{
+			auto CheckPathAttrib = [](const WCHAR* _path, bool _isDir) -> bool
+			{
+				if (_path == nullptr) return false;
+				DWORD att = GetFileAttributesW(_path);
+				return ((att != INVALID_FILE_ATTRIBUTES) && ((att & FILE_ATTRIBUTE_DIRECTORY) ^ (!_isDir)));
+			};
+			
 			auto GetQuotedString = [](const UString &_s) -> UString
 			{
 				UString s {'\"'};
@@ -370,13 +377,23 @@ static int Main2()
 			
 			
 			UString &prog = eo.EnterParamTarget;
-			DWORD attrib = GetFileAttributesW(prog.Ptr());
 			
-			if((attrib != INVALID_FILE_ATTRIBUTES) && !(attrib & FILE_ATTRIBUTE_DIRECTORY))
+			if(CheckPathAttrib(prog.Ptr(), false))
 			{
 				bool doSE = eo.SmartExtract.Val && !eo.SmartResult.newFolder.IsEmpty();
 				UString arg = doSE ? eo.SmartResult.GetFinalPath(UString("")) : fs2us(eo.OutputDir);
 				NFile::NName::NormalizeDirPathPrefix(arg);
+				
+				if(eo.SmartExtract.Val && !eo.SmartResult.rootItem.IsEmpty())
+				{
+					UString arg2 = arg + eo.SmartResult.rootItem;
+					if(CheckPathAttrib(arg2.Ptr(), true))
+					{
+						NFile::NName::NormalizeDirPathPrefix(arg2);
+						arg = std::move(arg2);
+					}
+				}
+				
 				arg = GetQuotedString(arg);
 				
 				RunWithArg(prog.Ptr(), arg.Ptr());

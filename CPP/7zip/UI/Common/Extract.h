@@ -23,11 +23,13 @@ struct SmartExtractResult
 {
 	UString baseFolder{};
 	UString newFolder{};
+	UString rootItem{};
 	
 	void Init()
 	{
 		baseFolder.Empty();
 		newFolder.Empty();
+		rootItem.Empty();
 	}
 	
 	UString GetFinalPath(const UString& _base)

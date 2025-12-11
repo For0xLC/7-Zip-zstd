@@ -124,9 +124,10 @@ static HRESULT DecompressArchive(
         if (!pathB.IsEqualTo_NoCase(pathA.Ptr())) break;
 	}
 	
-	if(pathB.IsEqualTo_NoCase(pathA.Ptr()))
+	if(pathA.IsEmpty() || pathB.IsEqualTo_NoCase(pathA.Ptr()))
 	{
 		options.SmartResult.CheckConflict(fs2us(outDir), pathB, Get_Correct_FsFile_Name(replaceName));
+		options.SmartResult.rootItem = pathB;
 	}
 	
 	if(!pathA.IsEmpty() && !pathB.IsEqualTo_NoCase(pathA.Ptr()))
